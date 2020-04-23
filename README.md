@@ -1,14 +1,19 @@
 API for recruitment agency app in express.js with MongoDB
 ## Setup
 
-clone [https://github.com/rafaewaqarqazi/recruitment-agency-client](https://github.com/rafaewaqarqazi/recruitment-agency-client)
-repository in same root directory and run
-### `yarn install` 
-in client directory
+create a root directory `recruitment-agency`
+and clone there two repositories in it
 
+`git clone https://github.com/rafaewaqarqazi/recruitment-agency-api.git`
+
+`git clone https://github.com/rafaewaqarqazi/recruitment-agency-client.git`
 ## Available Scripts
 
-In the project api directory, you can run:
+In the project client directory, run:
+
+### `yarn install`
+
+In the project api directory, run:
 
 ### `npm install`
 ### `npm run dev`
