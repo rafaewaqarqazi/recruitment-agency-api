@@ -1,13 +1,13 @@
 {
-  "name": "lawyer-assistant",
+  "name": "recruitment-agency",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/rafaewaqarqazi/lawyer-assistant-api.git",
+  "repository": "https://github.com/rafaewaqarqazi/recruitment-agency-client.git",
   "author": "rafaewaqarqazi <rafaewaqar@gmail.com>",
   "license": "MIT",
   "scripts": {
     "server": "nodemon app.js",
-    "start:client": "npm start --prefix ../lawyer-assistant-client",
+    "start:client": "npm start --prefix ../recruitment-agency-client",
     "start:server": "nodemon app.js",
     "start": "node server.js",
     "dev": "npm-run-all --parallel start:*"

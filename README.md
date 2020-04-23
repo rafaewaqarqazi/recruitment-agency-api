@@ -2,7 +2,7 @@ API for recruitment agency app in express.js with MongoDB
 ## Setup
 
 create a root directory `recruitment-agency`
-and clone there two repositories in it
+and clone these two repositories in it
 
 `git clone https://github.com/rafaewaqarqazi/recruitment-agency-api.git`
 
