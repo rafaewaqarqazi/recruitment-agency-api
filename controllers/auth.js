@@ -6,13 +6,22 @@ const {sendEmail} = require("../helpers");
 
 exports.register = async (req, res) => {
 
-  const userExists = await User.findOne({email: req.body.email});
-  if (userExists) return res.status(403).json({
+  const body = JSON.parse(req.body.data)
+  const userExists = await User.findOne({email: body.email});
+  if (userExists) return res.json({
     success: false,
     message: "User Already Exists"
   });
-
-  const user = await new User({...req.body});
+  const newUserData = {
+    ...body,
+    role: '1',
+    user_details: {
+      cv: {
+        filename: req.file.filename
+      }
+    }
+  }
+  const user = await new User(newUserData);
   const newUser = await user.save();
   if (newUser) {
     await res.json({

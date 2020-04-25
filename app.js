@@ -25,7 +25,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 
 //MiddleWares
-
+app.use(express.static('upload'))
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());

@@ -34,12 +34,12 @@ const userSchema = new mongoose.Schema({
   role: String,
   resetPasswordLink: String,
   mobileNo: String,
-  lawyer_details: {
-    institution: String,
-    qualification: String,
-    skills: []
-  },
-  clientDetails: {}
+  admin_details: {},
+  user_details: {
+    cv: {
+      filename: String
+    }
+  }
 });
 
 
