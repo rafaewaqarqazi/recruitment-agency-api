@@ -64,9 +64,9 @@ exports.login = (req, res) => {
   })
 };
 
-exports.isLawyer = (req, res, next) => {
-  let student = req.auth && req.auth.role === "2";
-  if (!student) {
+exports.isAdmin = (req, res, next) => {
+  let admin = req.auth && req.auth.role === "2";
+  if (!admin) {
     return res.status(403).json({
       error: "You are Not Authorized to perform this action"
     })
@@ -80,60 +80,6 @@ exports.requireSignin = expressjwt({
   userProperty: 'auth'
 });
 
-
-exports.verifyEmail = (req, res) => {
-  const {emailVerificationCode, _id} = req.body;
-  User.findOne({$and: [{_id}, {emailVerificationCode}]}).then(user => {
-    // if err or no user
-    if (!user)
-      return res.status(401).json({
-        error: "Invalid Code!"
-      });
-
-
-    const updatedFields = {
-      isEmailVerified: true,
-      emailVerificationCode: undefined
-    };
-
-    Object.assign(user, updatedFields);
-
-
-    user.save((err, result) => {
-      if (err) {
-        return res.status(400).json({
-          error: err
-        });
-      }
-      res.json({
-        message: `Your Email Has been verified. You can Sign-in Now`
-      });
-    });
-  });
-};
-exports.resendVerificationCode = (req, res) => {
-  const {_id} = req.body;
-  const emailVerCode = Math.floor(Math.random() * 1000000);
-  User.findOneAndUpdate({_id}, { emailVerificationCode: emailVerCode }).then(user => {
-    // if err or no user
-    if (!user)
-      return res.status(401).json({
-        error: "Something Went wrong!"
-      });
-    const emailData = {
-      from: "noreply@node-react.com",
-      to: user.email,
-      subject: "Email Verification Instructions",
-      text: `Please use the following code for email verification ${emailVerCode}`,
-      html: `<p>Please use the following code for email verification</p> <h3>${emailVerCode}</h3>`
-    };
-
-    sendEmail(emailData);
-    res.json({
-      message: `Please check your email for Verification`
-    });
-  });
-};
 
 // add forgotPassword and resetPassword methods
 exports.forgotPassword = (req, res) => {
