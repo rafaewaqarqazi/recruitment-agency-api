@@ -73,6 +73,15 @@ exports.isAdmin = (req, res, next) => {
   }
   next();
 };
+exports.isUser = (req, res, next) => {
+  let user = req.auth && req.auth.role === "1";
+  if (!user) {
+    return res.status(403).json({
+      error: "You are Not Authorized to perform this action"
+    })
+  }
+  next();
+};
 
 
 exports.requireSignin = expressjwt({

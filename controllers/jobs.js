@@ -32,7 +32,6 @@ exports.deleteJob = async (req, res) => {
   const body = req.body
   try {
     const response = await Jobs.findByIdAndDelete(body.id)
-    console.log('response', response)
     if (response) {
       await res.json({
         success: true,
@@ -45,6 +44,27 @@ exports.deleteJob = async (req, res) => {
     await res.json({success: false, message: 'could not delete job post'})
   }
 }
+exports.applyForJob = async (req, res) => {
+  const body = req.body
+  try {
+    const response = await Jobs.findByIdAndUpdate(body.jobId, {
+      $addToSet: {
+        applications: body.userId
+      }
+    }, {new: true})
+    if (response) {
+      await res.json({
+        success: true,
+        message: 'Applied Successfully!',
+        job: response
+      });
+    } else {
+      await res.json({success: false, message: 'could not apply'})
+    }
+  } catch (e) {
+    await res.json({success: false, message: 'could not apply'})
+  }
+}
 exports.allJobs = async (req, res) => {
   const jobs = await Jobs.find();
   await res.json({
@@ -53,11 +73,3 @@ exports.allJobs = async (req, res) => {
   });
 }
 
-exports.removeUser = async (req, res) => {
-  // try {
-  //   const result = await User.remove({"_id": req.params.userId});
-  //   await res.json(result);
-  // } catch (e) {
-  //   await res.json({error: e.message})
-  // }
-};
