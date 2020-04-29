@@ -4,7 +4,8 @@ require('dotenv').config()
 exports.newJob = async (req, res) => {
   const body = req.body
   const job = await new Jobs( {
-    ...body
+    ...body,
+    postedOn: Date.now()
   });
   const newJob = await job.save();
   if (newJob) {
