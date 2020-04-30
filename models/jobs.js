@@ -38,7 +38,12 @@ const jobsSchema = new mongoose.Schema({
     required: true
   },
   qualifications: [],
-  applications: [{type: ObjectId, ref: "Users"}]
+  applications: [{
+    user: {type: ObjectId, ref: "Users"},
+    status: String,
+    testDate: Date,
+    interviewDate: Date
+  }]
 });
 
 module.exports = mongoose.model('Jobs', jobsSchema);

@@ -45,7 +45,7 @@ exports.login = (req, res) => {
       })
     }
     //Generating Key
-    const {_id, firstName, lastName, email, role, lawyer_details, clientDetails} = user;
+    const {_id, firstName, lastName, email, role, user_details, admin_details} = user;
 
     const authToken = jwt.sign({_id, role}, process.env.JWT_SECRET);
     const loggedInUser = {
@@ -54,8 +54,8 @@ exports.login = (req, res) => {
       firstName,
       lastName,
       role,
-      lawyer_details,
-      clientDetails
+      user_details,
+      admin_details
     };
     return res.json({
       authToken,
