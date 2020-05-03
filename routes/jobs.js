@@ -6,7 +6,10 @@ const {
   allJobs,
   deleteJob,
   applyForJob,
-  scheduleTest
+  scheduleTest,
+  changeStatusTestInterview,
+  changeStatusApplication,
+  scheduleTestInterview
 } = require('../controllers/jobs');
 const {requireSignin, isAdmin, isUser} = require('../controllers/auth');
 
@@ -15,5 +18,8 @@ router.put('/edit', requireSignin, isAdmin, editJob);
 router.put('/delete', requireSignin, isAdmin, deleteJob);
 router.put('/apply', requireSignin, isUser, applyForJob);
 router.put('/schedule/test', requireSignin, isAdmin, scheduleTest);
+router.put('/schedule/testInterview', requireSignin, isAdmin, scheduleTestInterview);
+router.put('/status/testInterview', requireSignin, isAdmin, changeStatusTestInterview);
+router.put('/status/selectReject', requireSignin, isAdmin, changeStatusApplication);
 router.get('/all', allJobs);
 module.exports = router;

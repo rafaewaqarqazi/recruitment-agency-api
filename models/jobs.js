@@ -41,8 +41,14 @@ const jobsSchema = new mongoose.Schema({
   applications: [{
     user: {type: ObjectId, ref: "Users"},
     status: String,
-    testDate: Date,
-    interviewDate: Date
+    test: {
+      date: Date,
+      status: String
+    },
+    interview: {
+      date: Date,
+      status: String
+    }
   }]
 });
 

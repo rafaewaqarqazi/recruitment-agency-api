@@ -78,7 +78,10 @@ exports.scheduleTest = async (req, res) => {
     const response = await Jobs.findOneAndUpdate({_id: jobId}, {
       $set:{
         "applications.$[elem].status": '2',
-        "applications.$[elem].testDate": testDate,
+        "applications.$[elem].test": {
+          date: testDate,
+          status: '1'
+        },
       }
     }, {
       new: true,
@@ -98,6 +101,87 @@ exports.scheduleTest = async (req, res) => {
   } catch (e) {
     console.log(e.message)
     await res.json({success: false, message: 'could not schedule'})
+  }
+}
+exports.scheduleTestInterview = async (req, res) => {
+  const {jobId, applicationsIds, status, type, date} = req.body
+  try {
+    const response = await Jobs.findOneAndUpdate({_id: jobId}, {
+      $set:{
+        "applications.$[elem].status": status,
+        ["applications.$[elem]." + type]: {
+          date,
+          status: '1'
+        },
+      }
+    }, {
+      new: true,
+      multi: true,
+      arrayFilters: [{"elem._id" : {$in: applicationsIds.map(id => mongoose.Types.ObjectId(id))}}]
+    })
+      .populate('applications.user', 'firstName lastName email cv')
+    if (response) {
+      await res.json({
+        success: true,
+        message: 'Scheduled Successfully!',
+        job: response
+      });
+    } else {
+      await res.json({success: false, message: 'could not schedule'})
+    }
+  } catch (e) {
+    console.log(e.message)
+    await res.json({success: false, message: 'could not schedule'})
+  }
+}
+exports.changeStatusTestInterview = async (req, res) => {
+  const {jobId, applicationId, status, type} = req.body
+  try {
+    const response = await Jobs.findOneAndUpdate({_id: jobId, "applications._id": applicationId}, {
+      $set:{
+        ["applications.$."+ type +".status"]: status
+      }
+    }, {new: true})
+      .populate('applications.user', 'firstName lastName email cv')
+    if (response) {
+      await res.json({
+        success: true,
+        message: 'Done Successfully!',
+        job: response
+      });
+    } else {
+      await res.json({success: false, message: 'could not perform this action'})
+    }
+  } catch (e) {
+    console.log(e.message)
+    await res.json({success: false, message: 'could not perform this action'})
+  }
+}
+exports.changeStatusApplication = async (req, res) => {
+  const {jobId, applicationsIds, status} = req.body
+  try {
+    const response = await Jobs.findOneAndUpdate({_id: jobId}, {
+      $set:{
+        "applications.$[elem].status": status
+      }
+    }, {
+      new: true,
+      multi: true,
+      arrayFilters: [{"elem._id" : {$in: applicationsIds.map(id => mongoose.Types.ObjectId(id))}}]
+    })
+      .populate('applications.user', 'firstName lastName email cv')
+    if (response) {
+      await res.json({
+        success: true,
+        message: 'Done Successfully!',
+        job: response
+      });
+    } else {
+      await res.json({success: false, message: 'could not perform this action'})
+    }
+  } catch (e) {
+    console.log(e.message)
+    await res.json({success: false, message: 'could not perform this action'})
   }
 }
 exports.allJobs = async (req, res) => {
