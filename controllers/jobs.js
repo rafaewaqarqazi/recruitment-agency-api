@@ -22,7 +22,7 @@ exports.editJob = async (req, res) => {
   const job = await Jobs.findByIdAndUpdate(body._id, {
     ...editData
   }, {new: true})
-    .populate('applications.user', 'firstName lastName email cv')
+    .populate('applications.user', 'firstName lastName email user_details')
   if (job) {
     await res.json({
       success: true,
@@ -34,7 +34,7 @@ exports.deleteJob = async (req, res) => {
   const body = req.body
   try {
     const response = await Jobs.findByIdAndDelete(body.id)
-      .populate('applications.user', 'firstName lastName email cv')
+      .populate('applications.user', 'firstName lastName email user_details')
     if (response) {
       await res.json({
         success: true,
@@ -58,7 +58,7 @@ exports.applyForJob = async (req, res) => {
         }
       }
     }, {new: true})
-      .populate('applications.user', 'firstName lastName email cv')
+      .populate('applications.user', 'firstName lastName email user_details')
     if (response) {
       await res.json({
         success: true,
@@ -88,7 +88,7 @@ exports.scheduleTest = async (req, res) => {
       multi: true,
       arrayFilters: [{"elem._id" : {$in: applicationsIds.map(id => mongoose.Types.ObjectId(id))}}]
     })
-      .populate('applications.user', 'firstName lastName email cv')
+      .populate('applications.user', 'firstName lastName email user_details')
     if (response) {
       await res.json({
         success: true,
@@ -119,7 +119,7 @@ exports.scheduleTestInterview = async (req, res) => {
       multi: true,
       arrayFilters: [{"elem._id" : {$in: applicationsIds.map(id => mongoose.Types.ObjectId(id))}}]
     })
-      .populate('applications.user', 'firstName lastName email cv')
+      .populate('applications.user', 'firstName lastName email user_details')
     if (response) {
       await res.json({
         success: true,
@@ -142,7 +142,7 @@ exports.changeStatusTestInterview = async (req, res) => {
         ["applications.$."+ type +".status"]: status
       }
     }, {new: true})
-      .populate('applications.user', 'firstName lastName email cv')
+      .populate('applications.user', 'firstName lastName email user_details')
     if (response) {
       await res.json({
         success: true,
@@ -169,7 +169,7 @@ exports.changeStatusApplication = async (req, res) => {
       multi: true,
       arrayFilters: [{"elem._id" : {$in: applicationsIds.map(id => mongoose.Types.ObjectId(id))}}]
     })
-      .populate('applications.user', 'firstName lastName email cv')
+      .populate('applications.user', 'firstName lastName email user_details')
     if (response) {
       await res.json({
         success: true,
@@ -186,7 +186,7 @@ exports.changeStatusApplication = async (req, res) => {
 }
 exports.allJobs = async (req, res) => {
   const jobs = await Jobs.find()
-    .populate('applications.user', 'firstName lastName email cv')
+    .populate('applications.user', 'firstName lastName email user_details')
   await res.json({
     success: true,
     jobs

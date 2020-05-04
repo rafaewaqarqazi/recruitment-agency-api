@@ -83,7 +83,7 @@ exports.login = (req, res) => {
       })
     }
     //Generating Key
-    const {_id, firstName, lastName, email, role, user_details, admin_details} = user;
+    const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo} = user;
 
     const authToken = jwt.sign({_id, role}, process.env.JWT_SECRET);
     const loggedInUser = {
@@ -93,7 +93,10 @@ exports.login = (req, res) => {
       lastName,
       role,
       user_details,
-      admin_details
+      admin_details,
+      address,
+      country,
+      mobileNo
     };
     return res.json({
       authToken,
