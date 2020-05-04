@@ -29,6 +29,44 @@ exports.register = async (req, res) => {
     });
   }
 };
+exports.registerAdmin = async (req, res) => {
+
+  const {secret} = req.query
+  if (secret === process.env.JWT_SECRET) {
+    const {firstName, lastName, email, password, address, country, mobileNo} = req.body
+    if (firstName && lastName && email && password && address && country && mobileNo) {
+      const userExists = await User.findOne({email});
+      if (userExists) return res.json({
+        success: false,
+        message: "User Already Exists"
+      });
+      const newUserData = {
+        ...req.body,
+        role: '2'
+      }
+      const user = await new User(newUserData);
+      const newUser = await user.save();
+      if (newUser) {
+        await res.json({
+          success: true,
+          message: 'Admin User Created Successfully!'
+        });
+      }
+    } else {
+      await res.json({
+        success: false,
+        message: 'Some Fields are missing!'
+      });
+    }
+
+  } else {
+    await res.status(403).json({
+      success: false,
+      message: 'Could not create Admin User'
+    });
+  }
+
+};
 
 exports.login = (req, res) => {
   const {email, password} = req.body;

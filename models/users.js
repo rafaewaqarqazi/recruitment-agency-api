@@ -28,10 +28,9 @@ const userSchema = new mongoose.Schema({
     default: Date.now()
   },
   updatedAt: Date,
-  profileImage: {
-    filename: String
-  },
   role: String,
+  address: String,
+  country: String,
   resetPasswordLink: String,
   mobileNo: String,
   admin_details: {},
