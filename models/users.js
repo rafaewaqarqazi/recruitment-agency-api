@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema({
   resetPasswordLink: String,
   mobileNo: String,
   admin_details: {},
+  profileImage: {
+    filename: String
+  },
   user_details: {
     cv: {
       filename: String

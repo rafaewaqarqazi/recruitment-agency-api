@@ -6,27 +6,85 @@ const {sendEmail} = require("../helpers");
 
 exports.register = async (req, res) => {
 
-  const body = JSON.parse(req.body.data)
-  const userExists = await User.findOne({email: body.email});
-  if (userExists) return res.json({
-    success: false,
-    message: "User Already Exists"
-  });
-  const newUserData = {
-    ...body,
-    role: '1',
-    user_details: {
-      cv: {
-        filename: req.file.filename
+  try {
+    const body = JSON.parse(req.body.data)
+    const userExists = await User.findOne({email: body.email});
+    if (userExists) return res.json({
+      success: false,
+      message: "User Already Exists"
+    });
+    const newUserData = {
+      ...body,
+      role: '1',
+      user_details: {
+        cv: {
+          filename: req.file.filename
+        }
       }
     }
+    const user = await new User(newUserData);
+    const newUser = await user.save();
+    if (newUser) {
+      await res.json({
+        success: true
+      });
+    } else {
+      await res.json({success: false, message: 'Something went wrong!'})
+    }
+  } catch (e) {
+    await res.json({success: false, message: 'Something went wrong!'})
   }
-  const user = await new User(newUserData);
-  const newUser = await user.save();
-  if (newUser) {
-    await res.json({
-      success: true
-    });
+
+};
+exports.editProfile = async (req, res) => {
+  try {
+    const {userId, cv, ...body} = JSON.parse(req.body.data)
+    const userUpdate = await User.findByIdAndUpdate(userId, {
+      ...body,
+      user_details: {
+        cv: {
+          filename: req.file ? req.file.filename : cv
+        }
+      }
+    }, {new: true})
+    if (userUpdate) {
+      const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage} = userUpdate;
+      await res.json({
+        success: true,
+        message: 'Updated Successfully!',
+        user: {
+          _id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage
+        }
+      });
+    } else {
+      await res.json({success: false, message: 'Could not Edit!'})
+    }
+  } catch (e) {
+    await res.json({success: false, message: 'Something went wrong!'})
+  }
+};
+exports.editProfileImage = async (req, res) => {
+  try {
+    const {userId} = req.body
+    const userUpdate = await User.findByIdAndUpdate(userId, {
+      profileImage: {
+        filename: req.file.filename
+      }
+    }, {new: true})
+    if (userUpdate) {
+      const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage} = userUpdate;
+      await res.json({
+        success: true,
+        message: 'Updated Successfully!',
+        user: {
+          _id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage
+        }
+      });
+    } else {
+      await res.json({success: false, message: 'Could not Edit!'})
+    }
+  } catch (e) {
+    await res.json({success: false, message: 'Something went wrong!'})
   }
 };
 exports.registerAdmin = async (req, res) => {
@@ -83,7 +141,7 @@ exports.login = (req, res) => {
       })
     }
     //Generating Key
-    const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo} = user;
+    const {_id, firstName, lastName, email, role, user_details, admin_details, address, country, mobileNo, profileImage} = user;
 
     const authToken = jwt.sign({_id, role}, process.env.JWT_SECRET);
     const loggedInUser = {
@@ -96,7 +154,7 @@ exports.login = (req, res) => {
       admin_details,
       address,
       country,
-      mobileNo
+      mobileNo, profileImage
     };
     return res.json({
       authToken,
