@@ -268,6 +268,43 @@ exports.resetPassword = (req, res) => {
     });
   });
 };
+exports.changePassword = (req, res) => {
+  const {userId, newPassword, oldPassword} = req.body;
+
+  User.findOne({_id: userId}, (err, user) => {
+    // if err or no user
+    if (err || !user)
+      return res.json({
+        success: false,
+        message: 'Something Went Wrong!'
+      });
+    if (!user.authenticate(oldPassword)) {
+      return res.json({
+        success: false,
+        message: 'Old password is not correct!'
+      });
+    }
+
+    const updatedFields = {
+      password: newPassword
+    };
+
+    Object.assign(user, updatedFields);
+
+    user.save((err, result) => {
+      if (err) {
+        return res.json({
+          success: false,
+          message: 'Something Went Wrong!'
+        });
+      }
+      res.json({
+        success: true,
+        message: `Password Changed Successfully!`
+      });
+    });
+  });
+};
 exports.getUser = (req, res) => {
   res.json(req.profile)
 };

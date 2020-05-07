@@ -8,7 +8,8 @@ const {
   forgotPassword,
   resetPassword,
   registerAdmin,
-  editProfileImage
+  editProfileImage,
+  changePassword
 } = require('../controllers/auth');
 const router = express.Router();
 const upload = require('../upload')
@@ -19,6 +20,7 @@ router.put('/profile/image/:type', upload.single('image'), editProfileImage);
 router.post('/admin/register', registerAdmin);
 router.post('/login', login);
 router.put('/forgot-password', forgotPassword);
+router.put('/change-password', changePassword);
 router.put('/reset-password', resetPassword);
 
 router.param("userId", userById);
