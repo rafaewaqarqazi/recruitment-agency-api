@@ -258,15 +258,11 @@ exports.forgotPassword = (req, res) => {
 
     // email data
     const emailData = {
-      from: "noreply@node-react.com",
       to: email,
       subject: "Password Reset Instructions",
-      text: `Please use the following link to reset your password: ${
-        process.env.CLIENT_URL
-      }/reset-password/${token}`,
       html: `<p>Please use the following link to reset your password:</p> <p>${
         process.env.CLIENT_URL
-      }/reset-password/${token}</p>`
+      }/auth/reset-password/${token}</p>`
     };
 
     return user.updateOne({resetPasswordLink: token}, (err, success) => {
@@ -289,8 +285,9 @@ exports.resetPassword = (req, res) => {
   User.findOne({resetPasswordLink}, (err, user) => {
     // if err or no user
     if (err || !user)
-      return res.status("401").json({
-        error: "Invalid Link!"
+      return res.json({
+        success: false,
+        message: "Invalid Link!"
       });
 
     const updatedFields = {
@@ -308,6 +305,7 @@ exports.resetPassword = (req, res) => {
         });
       }
       res.json({
+        success: true,
         message: `Great! You can login with new Password Now.`
       });
     });
