@@ -2,6 +2,7 @@ const express = require('express');
 const {userById} = require("../controllers/users");
 const {
   register,
+  createAdmin,
   editProfile,
   login,
   getUser,
@@ -28,6 +29,7 @@ router.put('/change-password', changePassword);
 router.put('/reset-password', resetPassword);
 router.get('/admins/all', requireSignin, isAdmin, getAllAdmins);
 router.put('/admins/remove', requireSignin, isAdmin, removeAdmin);
+router.post('/admins/create', requireSignin, isAdmin, createAdmin);
 
 router.param("userId", userById);
 module.exports = router;

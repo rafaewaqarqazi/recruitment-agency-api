@@ -3,7 +3,7 @@ const expressjwt = require('express-jwt');
 require('dotenv').config();
 const User = require('../models/users');
 const {sendEmail} = require("../helpers");
-
+const generator = require('generate-password');
 exports.register = async (req, res) => {
 
   try {
@@ -30,6 +30,51 @@ exports.register = async (req, res) => {
       });
     } else {
       await res.json({success: false, message: 'Something went wrong!'})
+    }
+  } catch (e) {
+    await res.json({success: false, message: 'Something went wrong!'})
+  }
+
+};
+exports.createAdmin = async (req, res) => {
+
+  try {
+    const userExists = await User.findOne({email: req.body.email});
+    if (userExists) return res.json({
+      message: "User Already Exists",
+      success: false
+    });
+    const password = generator.generate({
+      length: 8,
+      numbers: true
+    });
+    const user = await new User({
+      ...req.body,
+      role: '2',
+      password
+    });
+    const newUser = await user.save();
+    if (newUser) {
+      const {email} = req.body;
+      const emailData = {
+        to: email,
+        subject: "Admin Account Created | Recruitment Agency",
+        html: `
+          <p>Dear User,</p>
+          <p>Your Account has been created.</p>
+          <p> Please use following email & password to login</p>
+          <h3>Email: ${email}</h3>
+          <h3>Password: ${password}</h3>
+        `
+      };
+
+      sendEmail(emailData);
+      await res.json({success: true, message: `Admin created & email sent to the user with credentials`});
+    } else {
+      await res.json({
+        success: false,
+        message: 'Could No Create!'
+      })
     }
   } catch (e) {
     await res.json({success: false, message: 'Something went wrong!'})
