@@ -308,3 +308,41 @@ exports.changePassword = (req, res) => {
 exports.getUser = (req, res) => {
   res.json(req.profile)
 };
+
+exports.getAllAdmins = async (req, res) => {
+  try {
+    const admins = await User.find({role: '2'}).select('fistName lastName email address country')
+    await res.json({
+      success: true,
+      admins
+    })
+  } catch (e) {
+    await res.json({
+      success: false,
+      message: 'Something Went Wrong!'
+    })
+  }
+};
+
+exports.removeAdmin = async (req, res) => {
+  try {
+    const admin = await User.findByIdAndRemove(req.body.adminId)
+    if (admin) {
+      await res.json({
+        success: true,
+        message: 'Admin Removed Successfully!'
+      })
+    } else {
+      await res.json({
+        success: false,
+        message: 'Could Not Remove Admin!'
+      })
+    }
+
+  } catch (e) {
+    await res.json({
+      success: false,
+      message: 'Something Went Wrong!'
+    })
+  }
+};

@@ -9,7 +9,11 @@ const {
   resetPassword,
   registerAdmin,
   editProfileImage,
-  changePassword
+  changePassword,
+  getAllAdmins,
+  requireSignin,
+  isAdmin,
+  removeAdmin
 } = require('../controllers/auth');
 const router = express.Router();
 const upload = require('../upload')
@@ -22,6 +26,8 @@ router.post('/login', login);
 router.put('/forgot-password', forgotPassword);
 router.put('/change-password', changePassword);
 router.put('/reset-password', resetPassword);
+router.get('/admins/all', requireSignin, isAdmin, getAllAdmins);
+router.put('/admins/remove', requireSignin, isAdmin, removeAdmin);
 
 router.param("userId", userById);
 module.exports = router;
