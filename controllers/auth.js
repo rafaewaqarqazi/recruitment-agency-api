@@ -354,7 +354,7 @@ exports.getUser = (req, res) => {
 
 exports.getAllAdmins = async (req, res) => {
   try {
-    const admins = await User.find({role: '2'}).select('fistName lastName email address country')
+    const admins = await User.find({role: '2'}).select('firstName lastName email address country')
     await res.json({
       success: true,
       admins
